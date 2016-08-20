@@ -6,22 +6,22 @@
     using namespace std;
 
     template<typename T, int... D>
-    class grid;
+    class multi_array;
 
     template<typename T, int... D>
-    class grid_iter {
+    class multiarray_iter {
         public:
-        grid<T, D...>* source;
+        multi_array<T, D...>* source;
         int index = -1, generation = -1, prev_dimensions = -1, cached_dimensions = -1;
 
-        grid_iter(grid<T, D...>* pointer, int index) {
+        multiarray_iter(multi_array<T, D...>* pointer, int index) {
             this->source = pointer;
             this->index = index;
             this->generation = 0;
             initialize(index);
         }
 
-        grid_iter(grid<T, D...>* pointer, int index, int generation, int prev_dimensions, int cached_dimensions) {
+        multiarray_iter(multi_array<T, D...>* pointer, int index, int generation, int prev_dimensions, int cached_dimensions) {
             this->source = pointer;
             this->index = index;
             this->generation = generation;
@@ -30,18 +30,18 @@
         }
 
         operator T () {
-            grid<T, D...>* source = this->source;
+            multi_array<T, D...>* source = this->source;
             int prev_dimensions = this->prev_dimensions;
             delete this;
             return *(source->pointer + prev_dimensions);
         }
 
-        grid_iter<T, D...>& operator = (T value) {
+        multiarray_iter<T, D...>& operator = (T value) {
             *(source->pointer + prev_dimensions) = value;
             return *this;
         }
 
-        grid_iter<T, D...>& operator[](int index) {
+        multiarray_iter<T, D...>& operator[](int index) {
             initialize(index);
             return *this;
         }
@@ -61,17 +61,17 @@
     };
 
     template<typename T, int... D>
-    class grid {
+    class multi_array {
         public:
         int dimensions[sizeof...(D)]{ D... };
         T* pointer = nullptr;
         int length = -1;
 
-        ~grid() {
+        ~multi_array() {
             delete[] pointer;
         }
 
-        grid() {
+        multi_array() {
             length = dimensions[0];
 
             for (size_t i = 1; i < sizeof...(D); i++)
@@ -80,8 +80,8 @@
             pointer = new T[length]();
         }
 
-        grid_iter<T, D...>& operator[](int index) {
-            return *new grid_iter<T, D...>(this, index);
+        multiarray_iter<T, D...>& operator[](int index) {
+            return *new multiarray_iter<T, D...>(this, index);
         }
     };
 
