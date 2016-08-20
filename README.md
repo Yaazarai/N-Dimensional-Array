@@ -9,7 +9,7 @@ An example of a 5th-dimensional array.
 using namespace std;
 
 int main() {
-    grid<int, 5, 2, 2, 2, 2> mygrid;
+    multi_array<int, 5, 2, 2, 2, 2> mygrid;
     /* Display Dimensions */
     cout << "W: " << mygrid.dimensions[0] << endl;
     cout << "H: " << mygrid.dimensions[1] << endl;
